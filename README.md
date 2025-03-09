@@ -15,21 +15,7 @@ The equation used in the code defines the shape of the Kreisel surface in 3D spa
 #### **Equation Breakdown**
 The code defines the **parametric equations** for the surface as:
 
-\[
-r = r_{\max} \cdot \cos(a \cdot u)
-\]
-
-\[
-x = r \cdot \sin(a \cdot u) \cdot \cos(3v)
-\]
-
-\[
-y = r \cdot \sin(a \cdot u) \cdot \sin(3v)
-\]
-
-\[
-z = r \cdot \cos(a \cdot u)
-\]
+![Image](https://github.com/user-attachments/assets/3b065b6c-4fcc-4057-ba7a-014ca4339739)
 
 #### **Explanation of Parameters:**
 - \( rmax = 2.0 \) → Maximum radius, which controls the overall size of the shape.
