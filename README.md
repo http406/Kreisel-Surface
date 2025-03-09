@@ -9,8 +9,8 @@ The surface rotates around the **Y-axis**, and a background of twinkling stars i
 
 ### **Understanding the Equation Used in the Code**  
 The equation used in the code defines the shape of the Kreisel surface in 3D space using **two parameters**:  
-- \( u \) (ranges from \(-\pi\) to \(\pi\))  
-- \( v \) (ranges from \(-\pi\) to \(\pi\))  
+- \( u \) (ranges from -𝜋 to 𝜋 
+- \( v \) (ranges from -𝜋 to 𝜋
 
 #### **Equation Breakdown**
 The code defines the **parametric equations** for the surface as:
