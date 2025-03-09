@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kreisel Surface</title>
+    <style>
+        body { margin: 0; 
+        background-color: black; 
+        display: flex; 
+        justify-content: center; 
+        align-items: center; 
+        height: 100vh;
+        margin: 0; 
+        outline: none;
+        background: #000;
+        -webkit-tap-highlight-color: transparent;
+        }
+        canvas { display: block; }
+        #infoButton {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 20px;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .info-popup {
+            display: none;
+            position: absolute;
+            top: 40px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            width: 300px;
+            text-align: left;
+            user-select: none;
+            font-size: 14px;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <button id="infoButton">&#9432;</button>
+    <div class="info-popup" id="infoPopup">
+        <p style="text-align:center;" ><strong>Kreisel Surface</strong></p>
+    <p style="color:pink; text-align: center;">The Kreisel Surface in this code is a parametric surface generated using a mathematical equation. It is visualized as a set of points in 3D space, connected to form a unique shape. The structure is created using a point cloud representation in Three.js, where each point is assigned a color based on its position.</p>
+            <p style="text-align:center;">For Equations visit my Github. Enjoy!</p>
+    </div>
+</head>
+<body>
+    <script>
+        let scene, camera, renderer, kreiselSurface, stars;
+
+        function init() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 5;
+
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+
+            createKreiselSurface();
+            createStars();
+
+            window.addEventListener('resize', onWindowResize, false);
+            animate();
+        }
+
+        function createKreiselSurface() {
+            const geometry = new THREE.BufferGeometry();
+            const points = [];
+            const colors = [];
+            
+            const uSteps = 150, vSteps = 150;
+            const a = 1.0;
+            const rMax = 2.0;
+            
+            for (let i = 0; i <= uSteps; i++) {
+                for (let j = 0; j <= vSteps; j++) {
+                    let u = (i / uSteps) * (2 * Math.PI) - Math.PI;
+                    let v = (j / vSteps) * (2 * Math.PI) - Math.PI;
+                    
+                    let r = rMax * Math.cos(a * u);
+                    let x = r * Math.sin(a * u) * Math.cos(3 * v);
+                    let y = r * Math.sin(a * u) * Math.sin(3 * v);
+                    let z = r * Math.cos(a * u);
+                    
+                    points.push(x, y, z);
+                    
+                    let color = new THREE.Color().setHSL((i / uSteps), 1.0, 0.5);
+                    colors.push(color.r, color.g, color.b);
+                }
+            }
+
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(points, 3));
+            geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+
+            const material = new THREE.PointsMaterial({ size: 0.03, vertexColors: true });
+            kreiselSurface = new THREE.Points(geometry, material);
+            scene.add(kreiselSurface);
+        }
+
+        function createStars() {
+            const starGeometry = new THREE.BufferGeometry();
+            const starVertices = [];
+            const starColors = [];
+            const starCount = 1000;
+            
+            for (let i = 0; i < starCount; i++) {
+                let x = (Math.random() - 0.5) * 50;
+                let y = (Math.random() - 0.5) * 50;
+                let z = (Math.random() - 0.5) * 50;
+                
+                starVertices.push(x, y, z);
+                
+                let color = new THREE.Color().setHSL(Math.random(), 1.0, 0.8);
+                starColors.push(color.r, color.g, color.b);
+            }
+            
+            starGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starVertices, 3));
+            starGeometry.setAttribute('color', new THREE.Float32BufferAttribute(starColors, 3));
+            
+            const starMaterial = new THREE.PointsMaterial({ size: 0.025, vertexColors: true });
+            stars = new THREE.Points(starGeometry, starMaterial);
+            scene.add(stars);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            kreiselSurface.rotation.y += 0.005;
+            stars.rotation.y += 0.0005;
+            twinkleStars();
+            renderer.render(scene, camera);
+        }
+
+        function twinkleStars() {
+            const colors = stars.geometry.attributes.color.array;
+            for (let i = 0; i < colors.length; i += 3) {
+                let variation = (Math.sin(Date.now() * 0.001 + i) + 1) / 10;
+                colors[i] += variation;
+                colors[i + 1] += variation;
+                colors[i + 2] += variation;
+            }
+            stars.geometry.attributes.color.needsUpdate = true;
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        init();
+        
+        $("#infoButton").click(function() {
+            $("#infoPopup").fadeToggle();
+        });
+    </script>
+</body>
+  </html>
+  
